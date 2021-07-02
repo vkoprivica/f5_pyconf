@@ -1,0 +1,54 @@
+### Nodes
+    address
+    connectionLimit
+    dynamicRatio
+    logging
+    monitor
+    rateLimit
+    ratio
+    state
+    session
+ 
+ 
+ 
+### Pools
+ 
+    kind
+    name
+    partition
+    fullPath
+    generation
+    selfLink
+    allowNat
+    allowSnat
+    ignorePersistedWeight
+    ipTosToClient
+    ipTosToServer
+    linkQosToClient
+    linkQosToServer
+    loadBalancingMode
+    minActiveMembers
+    minUpMembers
+    minUpMembersAction
+    minUpMembersChecking
+    monitor
+    queueDepthLimit
+    queueOnConnectionLimit
+    queueTimeLimit
+    reselectTries
+    serviceDownAction
+    slowRampTime
+    membersReference
+    _meta_data
+ 
+ 
+### Vips
+ 
+    description
+    destination
+    ipProtocol
+    mask
+    pool
+    source
+    sourceAddressTranslation
+    rules

@@ -1,0 +1,164 @@
+---
+ltm: 
+    ### iRules ###################################################################
+    irules:
+        - rule_1
+        - rule_2
+        - rule_3
+
+    ### Monitors #################################################################
+    monitors:
+        http_monitor_1:
+            type: http
+            interval: 5
+            upInterval: 0
+            timeUntilUp: 0
+            timeout: 16
+            manualResume: disabled
+            send: GET /\r\n
+            recv: null
+            username: null
+            password: null
+            alias: "*:*" #ip
+            adaptive: disabled
+
+        http_monitor_2:
+            type: http
+            interval: 5
+            upInterval: 0
+            timeUntilUp: 0
+            timeout: 16
+            manualResume: disabled
+            send: GET /\r\n
+            recv: null
+            username: null
+            password: null
+            alias: "*:*" #ip
+            adaptive: disabled
+
+        https_monitor_1:
+            type: https
+            interval: 5
+            upInterval: 0
+            timeUntilUp: 0
+            timeout: 16
+            manualResume: disabled
+            send: GET /\r\n
+            recv: null
+            username: null
+            password: null
+            alias: "*:*" #ip
+            adaptive: disabled
+            compatibility: disabled
+
+        tcp_monitor_1:
+            type: tcp
+            interval: 5
+            upInterval: 0
+            timeUntilUp: 0
+            timeout: 16
+            manualResume: disabled
+            send: GET /\r\n
+            recv: null
+            alias: "*:*" #ip
+            adaptive: disabled
+
+        gw_monitor_2:
+            type: gateway_icmp
+            interval: 5
+            timeout: 16
+            alias: 4.2.2.2:21 #ip:port
+            adaptive: disabled
+        
+        icmp_monitor_1:
+            type: icmp
+            interval: 5
+            timeout: 16
+            alias: 4.2.2.2 #ip
+            adaptive: disabled
+
+    ### Profiles ################################################################# 
+    profiles:
+        http_prof_1:
+            type: http
+
+        http_prof_2:
+            type: http
+        
+        ftp_prof_1:
+            type: ftp
+
+        tcp_prof_1:
+            type: tcp
+
+        client_ssl_prof_1:
+            type: client_ssl
+        
+        server_ssl_prof_1:
+            type: server_ssl
+
+    ### Nodes #################################################################### 
+    nodes:
+        node_1:
+            address: 10.1.1.1
+            connectionLimit: 0
+            dynamicRatio: 1
+            logging: disabled
+            monitor: default
+            rateLimit: disabled
+            ratio: 6
+            state: user-up
+            session: user-enabled
+
+        node_2:
+            address: 10.1.1.2
+            connectionLimit: 0
+            dynamicRatio: 1
+            logging: disabled
+            monitor: default
+            rateLimit: disabled
+            ratio: 2
+            state: user-up
+            session: user-enabled
+
+
+    ### Pools ####################################################################
+    pools:
+        pool_1:
+            monitor: /Common/tcp_monitor_1
+            members:
+                - node_1:80
+                - node_2:80
+
+        pool_2:
+            monitor: /Common/tcp
+            members:
+                - node_1:443
+                - node_2:443
+
+
+
+    ### Vips ##################################################################### 
+    vips:
+        vip_1:
+            description: "vip_1"
+            destination: 10.10.10.10:80
+            ipProtocol: tcp
+            mask: 255.255.255.255
+            pool: pool_1
+            source: 0.0.0.0/0
+            sourceAddressTranslation: {'type': 'automap'}
+            rules: ["rule_1"]
+            profiles: ["http"]
+
+        vip_2:
+            description: "vip_2"
+            destination: 10.1.1.2:443
+            ipProtocol: tcp
+            mask: 255.255.255.255
+            pool: pool_2
+            source: 0.0.0.0/0
+            sourceAddressTranslation: {'type': 'automap'}
+            rules: ["rule_2"]
+            profiles: ["http", "clientssl", "serverssl"]
+

@@ -1,0 +1,3 @@
+f5-sdk
+logbook
+PyYaml==5.4.1

@@ -1,0 +1,60 @@
+---
+    monitor_type_mappings: 
+        tcp: tcps
+        http: https
+        https: https_s
+        icmp: icmps
+        # wmi: wmis
+        gateway_icmp: gateway_icmps  
+
+    profile_type_mappings:
+        # analytics: analytics_s
+        certificate_authority: certificate_authoritys
+        # classification: classifications
+        client_ldap: client_ldaps
+        client_ssl: client_ssls
+        dhcpv4: dhcpv4s
+        dhcpv6: dhcpv6s
+        diameter: diameters
+        dns: dns_s
+        dns_logging: dns_loggings
+        fasthttp: fasthttps
+        fastl4: fastl4s
+        fix: fixs
+        ftp: ftps
+        gtp: gtps
+        html: htmls
+        http: https
+        http_compression: http_compressions
+        http2: http2s
+        icap: icaps
+        ipother: ipothers
+        ipsecalg: ipsecalgs
+        mblb: mblbs
+        netflow: netflows
+        ntlm: ntlms
+        ocsp_stapling_params: ocsp_stapling_params_s
+        one_connect: one_connects
+        pptp: pptps
+        qoe: qoes
+        radius: radius_s
+        request_adapt: request_adapts
+        request_log: request_logs
+        response_adapt: response_adapts
+        rewrite: rewrites
+        rtsp: rtsps
+        sctp: sctps
+        server_ldap: server_ldaps
+        server_ssl: server_ssls
+        sip: sips
+        smtp: smtps
+        smtps: smtps_s
+        socks: socks_s
+        statistics: statistics_s
+        stream: streams
+        tcp: tcps
+        tftp: tftps
+        udp: udps
+        web_acceleration: web_accelerations
+        # web_security: web_securitys
+        xml: xmls
