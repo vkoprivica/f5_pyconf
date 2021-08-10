@@ -5,7 +5,6 @@ IPV4_ADDR_REGEX = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
 
 
 class Vips(BigipConfig):
-
     def __init__(self, hostname: str) -> str:
         super().__init__(hostname)
         self.sot_vips = self.device_sot_parameters["ltm"]["vips"]
@@ -13,7 +12,9 @@ class Vips(BigipConfig):
     def _get_names(self) -> str:
         """Return all existing bigip vips."""
         try:
-            vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
             for vip in vips:
                 self.logging().info(vip.name)
                 print(vip.name)
@@ -26,7 +27,9 @@ class Vips(BigipConfig):
     def _get_config(self) -> str:
         """Get all pools and their members from bigip."""
         try:
-            vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
             for vip in vips:
                 print(f"{vip.name}")
                 print()
@@ -42,7 +45,9 @@ class Vips(BigipConfig):
     def _get_members(self) -> str:
         """Get all vips and their members from bigip."""
         try:
-            vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
             for vip in vips:
                 print()
                 print(f"{vip.name}")
@@ -50,8 +55,7 @@ class Vips(BigipConfig):
                 for key, value in vip.raw.items():
                     print(key, value)
 
-                profiles = vip.profiles_s.get_collection(
-                    partition=self.partition)
+                profiles = vip.profiles_s.get_collection(partition=self.partition)
                 for profile in profiles:
                     print(profile.raw)
                     # print(f"    members:")
@@ -76,7 +80,7 @@ class Vips(BigipConfig):
                     mask=vip_property["mask"],
                     pool=vip_property["pool"],
                     source=vip_property["source"],
-                    sourceAddressTranslation=vip_property['sourceAddressTranslation'],
+                    sourceAddressTranslation=vip_property["sourceAddressTranslation"],
                     rules=vip_property["rules"],
                     profiles=vip_property["profiles"],
                 )
@@ -92,14 +96,14 @@ class Vips(BigipConfig):
         """Assign pools to each vip to match SOT."""
         for name, vip_property in self.sot_vips.items():
             try:
-                if self.authentication().tm.ltm.virtuals.virtual.load(name=name, partition=self.partition):
-                    self.logging().info(
-                        f"Vip '{name}' exists in bigip device.")
+                if self.authentication().tm.ltm.virtuals.virtual.load(
+                    name=name, partition=self.partition
+                ):
+                    self.logging().info(f"Vip '{name}' exists in bigip device.")
                     print(f"Vip '{name}' exists in bigip device.")
 
                     vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                        name=name,
-                        partition=self.partition
+                        name=name, partition=self.partition
                     )
 
                     vip_obj.description = vip_property["description"]
@@ -108,7 +112,9 @@ class Vips(BigipConfig):
                     vip_obj.mask = vip_property["mask"]
                     vip_obj.pool = vip_property["pool"]
                     vip_obj.source = vip_property["source"]
-                    vip_obj.sourceAddressTranslation = vip_property['sourceAddressTranslation']
+                    vip_obj.sourceAddressTranslation = vip_property[
+                        "sourceAddressTranslation"
+                    ]
                     vip_obj.rules = vip_property["rules"]
                     vip_obj.profiles = vip_property["profiles"]
                     vip_obj.update()
@@ -121,17 +127,19 @@ class Vips(BigipConfig):
                 print(e)
 
     def _delete_not_sot(self) -> str:
-        """Delete not SOT vips. """
-        vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+        """Delete not SOT vips."""
+        vips = self.authentication().tm.ltm.virtuals.get_collection(
+            partition=self.partition
+        )
         bigip_names = [name.name for name in vips]
         sot_names = [name for name in self.sot_vips.keys()]
-        delete_candidate = [
-            name for name in bigip_names if name not in sot_names]
+        delete_candidate = [name for name in bigip_names if name not in sot_names]
 
         for name in delete_candidate:
             try:
                 vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                    name=name, partition=self.partition)
+                    name=name, partition=self.partition
+                )
                 vip_obj.delete()
                 self.logging().warning(f"Vip '{name}' has been deleted.")
                 print(f"Vip '{name}' has been deleted.")
@@ -142,13 +150,16 @@ class Vips(BigipConfig):
 
     def _delete_all(self) -> str:
         """Delete all bigip vips."""
-        vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+        vips = self.authentication().tm.ltm.virtuals.get_collection(
+            partition=self.partition
+        )
         bigip_names = [name.name for name in vips]
 
         for name in bigip_names:
             try:
                 vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                    name=name, partition=self.partition)
+                    name=name, partition=self.partition
+                )
                 vip_obj.delete()
                 self.logging().warning(f"Vip '{name}' has been deleted.")
                 print(f"Vip '{name}' has been deleted.")
@@ -166,7 +177,9 @@ class Vips(BigipConfig):
     def _profiles_get_names(self) -> str:
         """Return profiles assigned to vips."""
         try:
-            vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
             for vip in vips:
                 print()
                 self.logging().info(vip.name)
@@ -174,7 +187,7 @@ class Vips(BigipConfig):
                 profiles = vip.profiles_s.get_collection()
                 for profile in profiles:
                     self.logging().info(f"{profile.raw['name']}")
-                    print(profile.raw['name'])
+                    print(profile.raw["name"])
             print("#" * 79)
 
         except Exception as e:
@@ -184,7 +197,9 @@ class Vips(BigipConfig):
     def _profiles_get_config(self) -> str:
         """Return profiles assigned to vips."""
         try:
-            vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
             for vip in vips:
                 print()
                 # self.logging().info(vip.name)
@@ -203,7 +218,6 @@ class Vips(BigipConfig):
 
 
 class Vip(Vips):
-
     def __init__(self, hostname: str) -> str:
         super().__init__(hostname)
 
@@ -211,13 +225,35 @@ class Vip(Vips):
         """Check if vip exist in bigip device"""
         try:
             vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                name=name, partition=self.partition)
+                name=name, partition=self.partition
+            )
             print(vip_obj.name)
             print()
             self.logging().info(f"{vip_obj.name}")
             for key, value in vip_obj.raw.items():
                 self.logging().info(f"{key}: {value}")
                 print(key, value)
+
+        except Exception as e:
+            self.logging().warning(e)
+            print(e)
+
+    def _get_config_by_ip(self, ipv4) -> str:
+        """Get config if IP exist in bigip device"""
+        try:
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
+            for vip in vips:
+                ipv4_match = re.search(IPV4_ADDR_REGEX, vip.destination).group()
+                if ipv4_match == ipv4:
+                    print(f"{vip.name}")
+                    print()
+                    self.logging().info(f"{vip.name}")
+                    for key, value in vip.raw.items():
+                        print(key, value)
+                    break
+                print("#" * 79)
 
         except Exception as e:
             self.logging().warning(e)
@@ -237,7 +273,9 @@ class Vip(Vips):
                         mask=vip_property["mask"],
                         pool=vip_property["pool"],
                         source=vip_property["source"],
-                        sourceAddressTranslation=vip_property['sourceAddressTranslation'],
+                        sourceAddressTranslation=vip_property[
+                            "sourceAddressTranslation"
+                        ],
                         rules=vip_property["rules"],
                         profiles=vip_property["profiles"],
                     )
@@ -256,14 +294,14 @@ class Vip(Vips):
         for vip_name, vip_property in self.sot_vips.items():
             if vip_name == name:
                 try:
-                    if self.authentication().tm.ltm.virtuals.virtual.load(name=name, partition=self.partition):
-                        self.logging().info(
-                            f"Vip '{name}' exists in bigip device.")
+                    if self.authentication().tm.ltm.virtuals.virtual.load(
+                        name=name, partition=self.partition
+                    ):
+                        self.logging().info(f"Vip '{name}' exists in bigip device.")
                         print(f"Vip '{name}' exists in bigip device.")
 
                         vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                            name=name,
-                            partition=self.partition
+                            name=name, partition=self.partition
                         )
 
                         vip_obj.description = vip_property["description"]
@@ -272,7 +310,9 @@ class Vip(Vips):
                         vip_obj.mask = vip_property["mask"]
                         vip_obj.pool = vip_property["pool"]
                         vip_obj.source = vip_property["source"]
-                        vip_obj.sourceAddressTranslation = vip_property['sourceAddressTranslation']
+                        vip_obj.sourceAddressTranslation = vip_property[
+                            "sourceAddressTranslation"
+                        ]
                         vip_obj.rules = vip_property["rules"]
                         vip_obj.profiles = vip_property["profiles"]
                         vip_obj.update()
@@ -288,7 +328,8 @@ class Vip(Vips):
         """Delete specified vip."""
         try:
             vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                name=name, partition=self.partition)
+                name=name, partition=self.partition
+            )
             vip_obj.delete()
             self.logging().warning(f"Vip '{name}' has been deleted.")
             print(f"Vip '{name}' has been deleted.")
@@ -299,7 +340,9 @@ class Vip(Vips):
 
     def _exists(self, name) -> str:
         """Check if vip exist in bigip device"""
-        if self.authentication().tm.ltm.virtuals.virtual.exists(name=name, partition=self.partition):
+        if self.authentication().tm.ltm.virtuals.virtual.exists(
+            name=name, partition=self.partition
+        ):
             self.logging().info(f"Vip '{name}' exists.")
             print(f"Vip '{name}' exists.")
         else:
@@ -310,10 +353,11 @@ class Vip(Vips):
         """Check if vip Ipv4 exist in bigip device"""
         exist = False
         try:
-            vips = self.authentication().tm.ltm.virtuals.get_collection(partition=self.partition)
+            vips = self.authentication().tm.ltm.virtuals.get_collection(
+                partition=self.partition
+            )
             for vip in vips:
-                ipv4_match = re.search(
-                    IPV4_ADDR_REGEX, vip.destination).group()
+                ipv4_match = re.search(IPV4_ADDR_REGEX, vip.destination).group()
                 if ipv4_match == ipv4:
                     exist = True
                     break
@@ -327,7 +371,8 @@ class Vip(Vips):
     def _call_method(self, name):
         try:
             vip_obj = self.authentication().tm.ltm.virtuals.virtual.load(
-                name=name, partition=self.partition)
+                name=name, partition=self.partition
+            )
             return vip_obj
 
         except Exception as e:
